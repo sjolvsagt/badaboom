@@ -188,7 +188,7 @@ export class GameEngine {
         if (caughtRoll < 0.10) {
             this.state.isAlive = false;
             this.state.isExiled = false; // Caught, not exiled
-            this.state.gameOverReason = "INTERCEPTED. You tried to flee the country, but the authorities (or angry citizens) caught you at the airport. You spend the rest of your life in a less-than-luxurious cell with a few rats as your only friends.";
+            this.state.gameOverReason = "INTERCEPTED. You tried to flee the country, but the authorities caught you at the airport. You spend the rest of your life in a less-than-luxurious cell with a few rats as your only friends.";
             const score = calculateScore(this.state, false);
             this.onGameOver(`${this.state.gameOverReason}\n\nYour flight was cancelled.\nFinal Score: ${score}`);
             return;

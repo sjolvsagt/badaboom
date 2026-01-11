@@ -64,27 +64,49 @@ export function checkDanger(state: GameState): boolean {
     return false;
 }
 
-export function calculateScore(state: GameState, survived: boolean): number {
-    let score = 0;
+export type ScoreBreakdown = {
+    monthsScore: number;
+    moneyScore: number;
+    survivalBonus: number;
+    termBonus: number;
+    total: number;
+    totalMonths: number;
+};
+
+export function calculateScoreBreakdown(state: GameState, survived: boolean): ScoreBreakdown {
+    let breakdown: ScoreBreakdown = {
+        monthsScore: 0,
+        moneyScore: 0,
+        survivalBonus: 0,
+        termBonus: 0,
+        total: 0,
+        totalMonths: 0
+    };
     
     // 1. Time in power (1 point per month)
     // Assuming start is Jan 2026.
     const startYear = 2026;
     const startMonth = 1;
     const months = (state.year - startYear) * 12 + (state.month - startMonth);
-    score += Math.max(0, months);
+    breakdown.totalMonths = Math.max(0, months);
+    breakdown.monthsScore = breakdown.totalMonths;
 
     // 2. Money Stolen (1 point per 3b)
-    score += Math.floor(state.personalAccount / 3);
+    breakdown.moneyScore = Math.floor(state.personalAccount / 3);
 
-    // 3. Survival Bonus
+    // 3. Bonuses
     if (survived) {
-        score += 5;
+        breakdown.survivalBonus = 5;
         // Full term bonus (48 months)
         if (months >= 48) {
-            score += 10;
+            breakdown.termBonus = 10;
         }
     }
 
-    return score;
+    breakdown.total = breakdown.monthsScore + breakdown.moneyScore + breakdown.survivalBonus + breakdown.termBonus;
+    return breakdown;
+}
+
+export function calculateScore(state: GameState, survived: boolean): number {
+    return calculateScoreBreakdown(state, survived).total;
 }

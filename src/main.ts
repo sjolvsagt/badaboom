@@ -1,7 +1,7 @@
 import './style.css'
 import { GameEngine } from './game';
 import { GameEvent, Choice, Faction, StateChanges, GameState } from './types';
-import { calculateScore } from './rules';
+import { calculateScoreBreakdown } from './rules';
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
 
@@ -50,15 +50,36 @@ function render(engine: GameEngine, currentEvent: GameEvent | null, lastLog: str
     if (!app) return;
 
     if (!engine.state.isAlive || engine.state.isExiled || engine.state.isVictory) {
-        const score = calculateScore(engine.state, engine.state.isAlive); // isAlive is true if exiled (escaped), false if dead
+        const breakdown = calculateScoreBreakdown(engine.state, engine.state.isAlive); // isAlive is true if exiled (escaped), false if dead
         app.innerHTML = `
             <div class="main-monitor" style="text-align: center; justify-content: center;">
                 <h1 style="color: var(--danger-color)">${engine.state.isVictory ? "CONGRATULATIONS" : "GAME OVER"}</h1>
                 <p class="event-text">${engine.state.gameOverReason}</p>
                 <br/>
                 <div class="score-display" style="border: 1px dashed #666; padding: 20px; margin: 20px;">
-                    <h2>FINAL SCORE: ${score}</h2>
-                    <p>You survived until ${engine.state.month}/${engine.state.year}</p>
+                    <h2>FINAL SCORE: ${breakdown.total}</h2>
+                    <div style="text-align: left; max-width: 300px; margin: 20px auto; font-size: 0.9rem; color: #aaa;">
+                        ${breakdown.monthsScore > 0 ? `
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>Time in Power (${breakdown.totalMonths} months):</span>
+                            <span>+${breakdown.monthsScore}</span>
+                        </div>` : ''}
+                        ${breakdown.moneyScore > 0 ? `
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>Swiss Account ($${engine.state.personalAccount}B):</span>
+                            <span>+${breakdown.moneyScore}</span>
+                        </div>` : ''}
+                        ${breakdown.survivalBonus > 0 ? `
+                        <div style="display: flex; justify-content: space-between; color: var(--accent-color);">
+                            <span>Survival Bonus:</span>
+                            <span>+${breakdown.survivalBonus}</span>
+                        </div>` : ''}
+                        ${breakdown.termBonus > 0 ? `
+                        <div style="display: flex; justify-content: space-between; color: var(--accent-color);">
+                            <span>Full Term Bonus:</span>
+                            <span>+${breakdown.termBonus}</span>
+                        </div>` : ''}
+                    </div>
                 </div>
                 <button onclick="location.reload()">Try Again</button>
             </div>

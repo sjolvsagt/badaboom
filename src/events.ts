@@ -391,15 +391,17 @@ export const EVENTS: GameEvent[] = [
             {
                 text: 'Implement rationing blackouts.',
                 effect: (s, log) => {
-                    mod(s, Faction.Public, -15);
-                    mod(s, Faction.Oligarchs, -15);
+                    mod(s, Faction.Public, -10);
+                    mod(s, Faction.Oligarchs, -5);
+                    mod(s, Faction.Guerillas, 5);
                     log("Candle sales skyrocket. Your approval ratings plummet.");
                 }
             },
             {
-                text: 'Buy expensive gas from neighbors.',
+                text: 'Buy expensive gas from Venezuela.',
                 effect: (s, log) => {
                     mod(s, Faction.Public, -5);
+                    mod(s, Faction.Oligarchs, 5);
                     s.treasury -= 15;
                     log("Lights stay on, but the bill is astronomical.");
                 }
@@ -1981,14 +1983,14 @@ export const EVENTS: GameEvent[] = [
     {
         id: 'venezuela_election',
         title: 'The 99.9% Victory',
-        description: 'The Vice President has won the "emergency election" with 105% of the vote. She asks for your official congratulations.',
+        description: 'The Vice President of Venezuela won the "emergency election" with 105% of the vote. She asks for your official congratulations.',
         choices: [
             {
                 text: 'Congratulate her. Comrades!',
                 effect: (s, log) => {
                     mod(s, Faction.USA, -15);
                     mod(s, Faction.Guerillas, 10);
-                    mod(s, Faction.Public, -7);
+                    mod(s, Faction.Public, -3);
                     log("Trump tweets: 'WEAK! Colombia is LOST!' Sanctions incoming.");
                 }
             },
@@ -2128,9 +2130,10 @@ export const EVENTS: GameEvent[] = [
             {
                 text: 'Buy it yourself and resell it.',
                 effect: (s, log) => {
-                    s.treasury += 15;
-                    mod(s, Faction.Public, -5); // You cut them 
-                    mod(s, Faction.Cartels, 5); // You cut them 
+                    s.treasury += 10;
+                    s.personalAccount += 5;
+                    mod(s, Faction.Public, -5);  
+                    mod(s, Faction.Cartels, 5); 
                     mod(s, Faction.Oligarchs, -3); 
                     log("The state is now the biggest smuggler.");
                 }
