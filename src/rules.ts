@@ -110,3 +110,12 @@ export function calculateScoreBreakdown(state: GameState, survived: boolean): Sc
 export function calculateScore(state: GameState, survived: boolean): number {
     return calculateScoreBreakdown(state, survived).total;
 }
+
+export function getRating(score: number): { level: number, title: string, message: string } {
+    if (score >= 60) return { level: 6, title: "God / Shakira Mode", message: "Absolute legend. Statues will be built, reggaeton songs will be written about you. You have nothing left to prove!" };
+    if (score >= 40) return { level: 5, title: "El Patrón", message: "Impressive. You juggle checkpoints, guerillas, and the DEA like a pro. Are you actually Colombian?" };
+    if (score >= 30) return { level: 4, title: "Career Politician", message: "Not bad! You know how to grease the right palms. You survived longer than most smart people would." };
+    if (score >= 20) return { level: 3, title: "Bureaucrat", message: "Decent, but forgettable. You didn't crash the country immediately, but monuments won't be built in your honor." };
+    if (score >= 10) return { level: 2, title: "Barrio Mayor", message: "Weak. You have the political instincts of a guinea pig. Even the pigeons in Plaza Bolívar have more authority." };
+    return { level: 1, title: "Gringo Tourist", message: "Did you think this was a holiday in Cartagena? The only thing you successfully governed was your own demise." };
+}

@@ -1,7 +1,7 @@
 import './style.css'
 import { GameEngine } from './game';
 import { GameEvent, Choice, Faction, StateChanges, GameState } from './types';
-import { calculateScoreBreakdown } from './rules';
+import { calculateScoreBreakdown, getRating } from './rules';
 
 const app = document.querySelector<HTMLDivElement>('#app')!;
 
@@ -51,6 +51,7 @@ function render(engine: GameEngine, currentEvent: GameEvent | null, lastLog: str
 
     if (!engine.state.isAlive || engine.state.isExiled || engine.state.isVictory) {
         const breakdown = calculateScoreBreakdown(engine.state, engine.state.isAlive); // isAlive is true if exiled (escaped), false if dead
+        const rating = getRating(breakdown.total);
         app.innerHTML = `
             <div class="main-monitor" style="text-align: center; justify-content: center;">
                 <h1 style="color: var(--danger-color)">${engine.state.isVictory ? "CONGRATULATIONS" : "GAME OVER"}</h1>
@@ -79,6 +80,13 @@ function render(engine: GameEngine, currentEvent: GameEvent | null, lastLog: str
                             <span>Full Term Bonus:</span>
                             <span>+${breakdown.termBonus}</span>
                         </div>` : ''}
+                    </div>
+                    
+                    <hr style="border-color: #333; opacity: 0.5; margin: 15px 0" />
+                    
+                    <div style="margin-top: 15px;">
+                        <h3 style="color: #ffd700; margin-bottom: 5px;">You reached level ${rating.level} of 6: ${rating.title}</h3>
+                        <p style="font-size: 0.9rem; font-style: italic; color: #ccc;">"${rating.message}"</p>
                     </div>
                 </div>
                 <button onclick="location.reload()">Try Again</button>
